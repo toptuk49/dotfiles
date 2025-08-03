@@ -23,7 +23,9 @@ Think of tmux as the town you work in.
   tmux attach -t <name>  - connect to the session
   tmux ls                - show all sessions
 
-🍰 Window splitting:
+🍰 Window management:
+  <Leader> + n           - open new window
+  <Leader> + q           - close current window
   <Leader> + |           - split window horizontally
   <Leader> + -           - split window vertically
   <Leader> + c           - close current pane
