@@ -1,59 +1,33 @@
 #!/bin/bash
 
-# Description: Prints cheatsheets for frequently used tools
+# Description:
+source "$(dirname "$0")/cheatsheets-src/config.sh"
+source "$(dirname "$0")/cheatsheets-src/utils.sh"
 
-# Usage: cheatsheet <tool>
+handle_argument() {
+	local argument=$1
 
-show_tmux() {
-	cat <<EOF
-📚 TMUX CHEATSHEET
+	case "$argument" in
+	-l | --list)
+		list_cheatsheets
+		;;
+	*)
+		local cheatsheet=$1
 
-It's useful to understand that inside tmux, all keyboard shortcuts
-start with the <Leader> key, which is Ctrl + a (Cmd + a on macOS).
-
-💡 Core concepts:
-Think of tmux as the town you work in.
-- 🏢 Session is the building contains storeys.
-- 🪟 Window is the storey of building contains rooms.
-- 🚪 Pane is the separate room on the floor. It is your terminal.
-
-🔧 Basic commands:
-  tmux                   - start new session
-  tmux new -s <name>     - start named session
-  tmux attach -t <name>  - connect to the session
-  tmux ls                - show all sessions
-
-🍰 Window management:
-  <Leader> + n           - open new window
-  <Leader> + q           - close current window
-  <Leader> + |           - split window horizontally
-  <Leader> + -           - split window vertically
-  <Leader> + c           - close current pane
-
-↔️ Resize panes:
-  📌 NOTE: If you are working on macOS, you might configure
-  your terminal to use Option as Meta key.
-
-  Alt + Left Arrow       - resize pane leftwards
-  Alt + Right Arrow      - resize pane rightwards
-  Alt + Up Arrow         - resize pane upwards 
-  Alt + Down Arrow       - resize pane downwards
-
-🏃‍♂️ Moving between panes:
-  <Leader> + h           - select left pane
-  <Leader> + j           - select down pane
-  <Leader> + k           - select up pane
-  <Leader> + l           - select right pane
-
-🔄 Configuration reload:
-  <Leader> + r           - reload tmux configuration
-
-EOF
+		if [ -n "$cheatsheet" ]; then
+			if [ -f "$CHEATSHEETS_DIR/$cheatsheet.sh" ]; then
+				run_cheatsheet $cheatsheet
+			else
+				echo "Error: No cheatsheet found for '$cheatsheet'" >&2
+				show_usage
+				exit 1
+			fi
+		else
+			show_usage
+		fi
+		;;
+	esac
 }
 
-case "$1" in
-tmux) show_tmux | less ;;
-*)
-	echo "Usage: cheatsheet <tool>"
-	;;
-esac
+handle_argument $1
+exit 0
