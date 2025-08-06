@@ -117,3 +117,10 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # mise
 eval "$($HOME/.local/bin/mise activate zsh)"
+
+# conda installation
+SYSTEM_NAME=$(uname)
+
+if [[ $SYSTEM_NAME == "Darwin" ]]; then
+  source "$HOME/.config/zsh/macos/conda_path.sh"
+fi
