@@ -1,7 +1,9 @@
-ZSH="$HOME/.oh-my-zsh"
-ZSH_CONFIG="$HOME/.config/zsh/"
+#!/bin/bash
 
-source "$ZSH_CONFIG/general/oh-my-zsh/theme.sh"
-source "$ZSH_CONFIG/general/oh-my-zsh/plugins.sh"
+ZSH="$HOME/.oh-my-zsh"
+local ZSH_CONFIG="$HOME/.config/zsh/general"
+
+source "$ZSH_CONFIG/oh-my-zsh/theme.sh"
+source "$ZSH_CONFIG/oh-my-zsh/plugins.sh"
 
 source $ZSH/oh-my-zsh.sh
