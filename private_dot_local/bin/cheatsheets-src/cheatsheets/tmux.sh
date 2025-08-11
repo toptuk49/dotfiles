@@ -19,6 +19,7 @@ Think of tmux as the town you work in.
   tmux new -s <name>     - start named session
   tmux attach -t <name>  - connect to the session
   tmux ls                - show all sessions
+  <Leader> + d           - detach from session
 
 🍰 Window management:
   <Leader> + n           - open new window
