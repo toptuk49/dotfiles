@@ -1,6 +1,6 @@
 #!/bin/bash
 
-show_cheatsheet() {
+show_figma() {
 	cat <<EOF
 🎨 FIGMA CHEATSHEET
 
