@@ -3,8 +3,6 @@
 	filemode = true
 	bare = false
 	logallrefupdates = true
-	ignorecase = true
-	precomposeunicode = true
 	eol = lf
 	autocrlf = false
 [fsck]
@@ -16,7 +14,6 @@
 [oh-my-zsh]
 	remote = origin
 	branch = master
-	lastVersion = 70f0e5285f802ce6eb7feea4588ff8917246233e
 [remote "origin"]
 	url = https://github.com/ohmyzsh/ohmyzsh.git
 	fetch = +refs/heads/*:refs/remotes/origin/*

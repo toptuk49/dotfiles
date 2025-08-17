@@ -1,4 +1,4 @@
-# Copyright 2020-2023 Joseph Block <jpb@unixorn.net>
+# Copyright 2020-2024 Joseph Block <jpb@unixorn.net>
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,12 +13,16 @@
 # limitations under the License.
 
 # Add our plugin's bin directory to the user's path
-local FZF_PLUGIN_BIN="$(dirname $0)/bin"
-path+=(${FZF_PLUGIN_BIN})
+local FZF_PLUGIN_BIN="${0:h}/bin"
+if [[ ! "$path" == *${FZF_PLUGIN_BIN}* ]]; then
+  path+=(${FZF_PLUGIN_BIN})
+fi
 unset FZF_PLUGIN_BIN
 
 local FZF_COMPLETIONS_D="$(dirname $0)/completions"
-export fpath=($FZF_COMPLETIONS_D "${fpath[@]}" )
+if [[ -d "$FZF_COMPLETIONS_D" ]]; then
+  export fpath=($FZF_COMPLETIONS_D "${fpath[@]}" )
+fi
 unset FZF_COMPLETIONS_D
 
 function _fzf_has() {
@@ -45,13 +49,16 @@ fi
 unset xdg_path
 
 # Install fzf into ~ if it hasn't already been installed.
-if [[ ! -d $FZF_PATH ]]; then
-  git clone --depth 1 https://github.com/junegunn/fzf.git $FZF_PATH
-  $FZF_PATH/install --bin
+if ! _fzf_has fzf; then
+  if [[ ! -d $FZF_PATH ]]; then
+    git clone --depth 1 https://github.com/junegunn/fzf.git $FZF_PATH
+    $FZF_PATH/install --bin
+  fi
 fi
 
 # Install some default settings if user doesn't already have fzf
 # settings configured.
+_fzf_debugOut "fzf_conf: $fzf_conf"
 if [[ ! -f $fzf_conf ]]; then
   echo "Can't find a fzf configuration file at $fzf_conf, creating a default one"
   cp "$(dirname $0)/fzf-settings.zsh" $fzf_conf
@@ -65,7 +72,7 @@ unset fzf_conf
 # Reasonable defaults. Exclude .git directory and the node_modules cesspit.
 # Don't step on user's FZF_DEFAULT_COMMAND
 if [[ -z "$FZF_DEFAULT_COMMAND" ]]; then
-  export FZF_DEFAULT_COMMAND='find . -type f ( -path .git -o -path node_modules ) -prune'
+  export FZF_DEFAULT_COMMAND='find . -type f -not \( -path "*/.git/*" -o -path "./node_modules/*" \)'
   export FZF_ALT_C_COMMAND='find . -type d ( -path .git -o -path node_modules ) -prune'
 
   if _fzf_has rg; then
@@ -97,7 +104,16 @@ fi
 #   - An advanced preview using a `less` preprocessor, capable of showing a wide range of formats, incl. images, dirs,
 #     CSVs, and other binary files (depending on available tooling).
 _fzf_preview() {
-  foolproofPreview='([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2>/dev/null | head -n 200'
+  _fzf_preview_pager='cat'
+  foolproofPreview='cat {}'
+  if _fzf_has bat; then
+    _fzf_preview_pager='bat'
+    foolproofPreview='([[ -f {} ]] && (bat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2>/dev/null | head -n 200'
+  fi
+  if _fzf_has batcat; then
+    _fzf_preview_pager='batcat'
+    foolproofPreview='([[ -f {} ]] && (batcat --style=numbers --color=always {} || cat {})) || ([[ -d {} ]] && (tree -C {} | less)) || echo {} 2>/dev/null | head -n 200'
+  fi
   local preview
   [[ "$FZF_PREVIEW_ADVANCED" == true ]] \
     && preview="lessfilter-fzf {}" \
@@ -106,6 +122,7 @@ _fzf_preview() {
 }
 
 # Don't step on user's defined variables. Export to potentially leverage them by other scripts.
+[[ -z "$FZF_COLOR_SCHEME" ]]   && export FZF_COLOR_SCHEME="--color='hl:148,hl+:154,pointer:032,marker:010,bg+:237,gutter:008'"
 [[ -z "$FZF_PREVIEW" ]]        && export FZF_PREVIEW="$(_fzf_preview)"
 [[ -z "$FZF_PREVIEW_WINDOW" ]] && export FZF_PREVIEW_WINDOW=':hidden'
 if [[ -z "$FZF_DEFAULT_OPTS" ]]; then
@@ -116,7 +133,7 @@ if [[ -z "$FZF_DEFAULT_OPTS" ]]; then
     "--multi"
     "--preview='${FZF_PREVIEW}'"
     "--preview-window='${FZF_PREVIEW_WINDOW}'"
-    "--color='hl:148,hl+:154,pointer:032,marker:010,bg+:237,gutter:008'"
+    "$FZF_COLOR_SCHEME"
     "--prompt='∼ '"
     "--pointer='▶'"
     "--marker='✓'"

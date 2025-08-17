@@ -49,7 +49,7 @@ jobs:
       # Run Linter against code base #
       ################################
       - name: Lint Code Base
-        uses: megalinter/megalinter@v7
+        uses: megalinter/megalinter@v8
         env:
           ACTION_ACTIONLINT_DISABLE_ERRORS: true
           DEFAULT_BRANCH: main
@@ -57,6 +57,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPOSITORY_CHECKOV_DISABLE_ERRORS: true
           REPOSITORY_KICS_DISABLE_ERRORS: true
+          SPELL_LYCHEE_DISABLE_ERRORS: true
+          YAML_YAMLLINT_DISABLE_ERRORS: true
           TERRAFORM_KICS_DISABLE_ERRORS: true
           VALIDATE_ALL_CODEBASE: false
 
