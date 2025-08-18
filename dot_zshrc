@@ -5,6 +5,7 @@ source "$ZSH_CONFIG/pnpm_path.sh"
 source "$ZSH_CONFIG/conda_path.sh"
 source "$ZSH_CONFIG/mise_path.sh"
 source "$ZSH_CONFIG/brew_path.sh"
+source "$ZSH_CONFIG/ssh.sh"
 
 export PATH="$HOME/.local/bin:$PATH"
 alias pn="pnpm"
