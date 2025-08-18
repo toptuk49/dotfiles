@@ -18,5 +18,7 @@ return {
   { import = "astrocommunity.pack.python" },
   -- system
   { import = "astrocommunity.pack.bash" },
+  -- csharp
+  { import = "astrocommunity.pack.cs-omnisharp" },
   -- import/override with your plugins folder
 }
