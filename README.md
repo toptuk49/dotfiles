@@ -45,3 +45,7 @@ chezmoi init --apply --verbose https://github.com/toptuk49/dotfiles.git
 ⚡️ zsh with oh-my-zsh framework
 
 🖋️ Neovim with astronvim configuration
+
+🍺 Common brew packages
+
+🖥️ tmux for terminal multiplex
