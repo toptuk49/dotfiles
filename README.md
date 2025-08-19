@@ -49,3 +49,5 @@ chezmoi init --apply --verbose https://github.com/toptuk49/dotfiles.git
 🍺 Common brew packages
 
 🖥️ tmux for terminal multiplex
+
+📝 git with SSH auth and commit signing
