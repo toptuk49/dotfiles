@@ -1,0 +1,12 @@
+[user]
+	email = "{{ (bitwarden "item" "My GitHub profile").identity.email }}"
+	name = "{{ (bitwarden "item" "My GitHub profile").identity.username }}"
+	signingkey = "{{ (bitwarden "item" "GitHub Signing Key").sshKey.publicKey }}"
+[gpg]
+	format = ssh
+[commit]
+	gpgsign = true
+[gpg "ssh"]
+	allowedSignersFile = {{ .chezmoi.homeDir }}/.ssh/allowedSigners
+[credential]
+	helper = store
