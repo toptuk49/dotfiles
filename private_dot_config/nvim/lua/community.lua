@@ -20,5 +20,7 @@ return {
   { import = "astrocommunity.pack.bash" },
   -- csharp
   { import = "astrocommunity.pack.cs-omnisharp" },
+  -- chezmoi
+  { import = "astrocommunity.pack.chezmoi" },
   -- import/override with your plugins folder
 }
