@@ -30,5 +30,3 @@ end
 
 require("lazy_setup")
 require("polish")
-
-require("langmapper").automapping({ global = true, buffer = true })
