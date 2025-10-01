@@ -1,6 +1,7 @@
 ZSH_CONFIG="$HOME/.config/zsh/general"
 
 source "$ZSH_CONFIG/oh-my-zsh/config.sh"
+source "$ZSH_CONFIG/config_path.sh"
 source "$ZSH_CONFIG/pnpm_path.sh"
 source "$ZSH_CONFIG/conda_path.sh"
 source "$ZSH_CONFIG/mise_path.sh"
