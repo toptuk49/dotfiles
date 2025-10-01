@@ -1,2 +1,4 @@
 git:
   overrideGpg: true
+  autoFetch: false
+  fetchAll: false
