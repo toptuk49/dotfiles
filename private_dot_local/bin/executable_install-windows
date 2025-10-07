@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+echo "Setting up Windows environment from WSL..."
+
+echo "Installing packages..."
+"$SCRIPT_DIR/windows/install/winget.sh"
+
+echo "Installing AHK hotkeys..."
+"$SCRIPT_DIR/windows/install/ahk.sh"
+
+echo "Windows setup complete!"

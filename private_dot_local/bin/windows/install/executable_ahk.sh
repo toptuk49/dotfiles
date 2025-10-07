@@ -12,11 +12,10 @@ WIN_USERNAME=$(cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')
 WIN_HOME="/mnt/c/Users/$WIN_USERNAME"
 STARTUP_DIR="$WIN_HOME/AppData/Roaming/Microsoft/Windows/Start Menu/Programs/Startup"
 
-echo "Packages installed"
 echo "Installing AHK scripts..."
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-AHK_SOURCE="$SCRIPT_DIR/windows/autohotkey"
+AHK_SOURCE="$SCRIPT_DIR/../autohotkey"
 
 mkdir -p "$STARTUP_DIR"
 cp "$AHK_SOURCE/main.ahk" "$STARTUP_DIR/macos_hotkeys.ahk"
