@@ -1,0 +1,8 @@
+{
+  "packages": [
+    {
+      "id": "AutoHotkey.AutoHotkey",
+      "version": "latest"
+    }
+  ]
+}
