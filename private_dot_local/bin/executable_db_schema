@@ -1,0 +1,112 @@
+#!/bin/bash
+set -e
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[38;5;220m'
+NC='\033[0m' # No Color
+
+error() {
+  echo -e "${RED}❌ Error: $1${NC}"
+  exit 1
+}
+
+success() {
+  echo -e "${GREEN}✅ $1${NC}"
+}
+
+info() {
+  echo -e "${YELLOW}ℹ️ $1${NC}"
+}
+
+check_dependencies() {
+  command -v pg_dump >/dev/null 2>&1 || error cat <<EOF
+pg_dump is not installed on your system! Install postgresql-client.
+
+Fixes:
+- \`brew install postgresql@17\` on macOS
+- \`sudo apt install postgresql-client\` on Linux/Ubuntu
+EOF
+
+  if [[ "$(uname)" == "Darwin" ]]; then
+    COPY_CMD="pbcopy"
+  elif [[ "$(uname)" == "Linux" ]]; then
+    if command -v xclip >/dev/null 2>&1; then
+      COPY_CMD="xclip -selection clipboard"
+    elif command -v xsel >/dev/null 2>&1; then
+      COPY_CMD="xsel --clipboard --input"
+    else
+      error "Install xclip or xsel to work with the clipboard!"
+    fi
+  else
+    error "Unsupported operating system!"
+  fi
+}
+
+main() {
+  echo -e "${GREEN}🚀 Getting PostgreSQL DB Structure${NC}"
+  echo "=============================================="
+
+  check_dependencies
+
+  # Parameters (can be passed as arguments)
+  if [[ $# -ge 2 ]]; then
+    DB_USER="$1"
+    DB_NAME="$2"
+  else
+    # Or request interactively
+    read -r -p "Enter DB username [$USER]: " DB_USER
+    DB_USER=${DB_USER:-$USER}
+
+    read -r -p "Enter DB name: " DB_NAME
+    if [[ -z "$DB_NAME" ]]; then
+      error "DB name cannot be empty"
+    fi
+  fi
+
+  info "Connecting to DB: $DB_NAME with user: $DB_USER"
+
+  export PGPASSWORD
+  if [[ -z "$PGPASSWORD" ]]; then
+    read -r -sp "Password for $DB_USER (press Enter if not required): " PGPASSWORD
+    echo
+  fi
+
+  info "Fetching DDL structure..."
+
+  OUTPUT=$(pg_dump -U "$DB_USER" -d "$DB_NAME" \
+    --schema-only \
+    --no-owner \
+    --no-privileges \
+    --no-tablespaces \
+    --no-security-labels \
+    --no-table-access-method \
+    --no-sync 2>&1)
+
+  if echo "$OUTPUT" | grep -q "ERROR\|FATAL"; then
+    error "Error connecting to DB:\n$OUTPUT"
+  fi
+
+  echo "$OUTPUT" | eval "$COPY_CMD"
+
+  success "DB structure successfully copied to clipboard!"
+
+  info "Structure summary:"
+  echo "------------------------"
+
+  TABLES=$(echo "$OUTPUT" | grep -E "^CREATE TABLE" | sed -E 's/^CREATE TABLE [^.]*\.([^ ]+) .*/\1/' | sort)
+
+  if [[ -n "$TABLES" ]]; then
+    echo "📊 Tables in DB:"
+    echo "$TABLES" | while read -r table; do
+      echo "   - $table"
+    done
+    echo
+    success "Total tables: $(echo "$TABLES" | wc -l | tr -d ' ')"
+  fi
+
+  FKS=$(echo "$OUTPUT" | grep -c "FOREIGN KEY")
+  success "Foreign keys: $FKS"
+}
+
+main "$@"
