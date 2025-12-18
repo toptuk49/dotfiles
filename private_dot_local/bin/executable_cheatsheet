@@ -16,7 +16,7 @@ handle_argument() {
 
 		if [ -n "$cheatsheet" ]; then
 			if [ -f "$CHEATSHEETS_DIR/$cheatsheet.sh" ]; then
-				run_cheatsheet $cheatsheet
+				run_cheatsheet "$cheatsheet"
 			else
 				echo "Error: No cheatsheet found for '$cheatsheet'" >&2
 				show_usage
@@ -29,5 +29,5 @@ handle_argument() {
 	esac
 }
 
-handle_argument $1
+handle_argument "$1"
 exit 0
