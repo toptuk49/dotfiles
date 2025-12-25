@@ -1,6 +1,12 @@
 #!/bin/bash
 
-local SYSTEM_NAME=$(uname)
+SYSTEM_NAME=$(uname)
+ENV_TYPE="unknown"
+
+if [[ -n "$ANDROID_ROOT" ]]; then
+  source "$HOME/.config/zsh/termux/ssh.sh"
+  return 0
+fi
 
 if [[ $SYSTEM_NAME == "Darwin" ]]; then
   source "$HOME/.config/zsh/macos/ssh.sh"

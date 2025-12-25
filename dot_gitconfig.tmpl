@@ -1,7 +1,11 @@
 [user]
 	email = "{{ (bitwarden "item" "My GitHub profile").identity.email }}"
 	name = "{{ (bitwarden "item" "My GitHub profile").identity.username }}"
+	{{ if (env "ANDROID_ROOT") -}}
+	signingkey = {{ include (joinPath .chezmoi.homeDir "/.ssh/android-signing.pub") }}
+	{{- else -}}
 	signingkey = "{{ (bitwarden "item" "GitHub Signing Key").sshKey.publicKey }}"
+	{{- end -}}
 [gpg]
 	format = ssh
 [commit]

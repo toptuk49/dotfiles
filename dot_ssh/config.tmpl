@@ -1,0 +1,8 @@
+{{- if (env "ANDROID_ROOT") }}
+Host github.com
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/android-authentication
+  IdentityFile ~/.ssh/android-signing
+  IdentitiesOnly yes
+{{- end }}

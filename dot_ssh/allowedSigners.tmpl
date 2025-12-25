@@ -1,2 +1,5 @@
+{{- if (env "ANDROID_ROOT") }}
+{{ (bitwarden "item" "My GitHub profile").identity.email }} {{ include (joinPath .chezmoi.homeDir ".ssh/android-signing.pub") }}
+{{- else }}
 {{ (bitwarden "item" "vault.bitwarden.com").login.username }} {{ (bitwarden "item" "GitHub Signing Key").sshKey.publicKey }}
-
+{{- end }}
