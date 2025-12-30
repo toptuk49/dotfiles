@@ -1,12 +1,22 @@
 ZSH_CONFIG="$HOME/.config/zsh/general"
 
-source "$ZSH_CONFIG/oh-my-zsh/config.sh"
-source "$ZSH_CONFIG/config_path.sh"
-source "$ZSH_CONFIG/pnpm_path.sh"
-source "$ZSH_CONFIG/conda_path.sh"
-source "$ZSH_CONFIG/mise_path.sh"
-source "$ZSH_CONFIG/brew_path.sh"
-source "$ZSH_CONFIG/ssh.sh"
+source "$ZSH_CONFIG/oh-my-zsh/config.zsh"
+source "$ZSH_CONFIG/config_path.zsh"
+source "$ZSH_CONFIG/pnpm_path.zsh"
+source "$ZSH_CONFIG/conda_path.zsh"
+source "$ZSH_CONFIG/mise_path.zsh"
+source "$ZSH_CONFIG/brew_path.zsh"
+source "$ZSH_CONFIG/ssh.zsh"
+source "$ZSH_CONFIG/git.zsh" &>/dev/null
 
+# pnpm
 export PATH="$HOME/.local/bin:$PATH"
 alias pn="pnpm"
+
+# change account git hook
+autoload -U add-zsh-hook
+add-zsh-hook chpwd detect_and_change_account
+
+if [[ -d .git ]]; then
+  detect_and_change_account
+fi

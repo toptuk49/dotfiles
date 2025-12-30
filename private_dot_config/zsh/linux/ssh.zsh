@@ -1,4 +1,3 @@
-#!/bin/bash
 export SSH_AUTH_SOCK=$HOME/.ssh/agent.sock
 
 rm -f "$SSH_AUTH_SOCK"

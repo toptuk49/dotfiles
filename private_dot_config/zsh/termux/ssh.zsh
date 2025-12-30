@@ -1,5 +1,3 @@
-#!/bin/bash
-
 export SSH_AGENT_SOCK="$HOME/.ssh/ssh-agent.termux.sock"
 
 if [[ -S "$SSH_AGENT_SOCK" ]]; then
