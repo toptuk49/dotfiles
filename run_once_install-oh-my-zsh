@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo "Setting up oh-my-zsh..."
+
+OH_MY_ZSH_DIR="$HOME/.oh-my-zsh"
+
+if [ ! -d "$OH_MY_ZSH_DIR" ]; then
+  echo "Installing oh-my-zsh..."
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  echo "oh-my-zsh is successfully installed!"
+else
+  echo "oh-my-zsh is already installed!"
+fi
