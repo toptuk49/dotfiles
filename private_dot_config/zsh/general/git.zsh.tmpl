@@ -1,0 +1,13 @@
+SYSTEM_NAME=$(uname)
+ENV_TYPE="unknown"
+
+if [[ -n "$ANDROID_ROOT" ]]; then
+  source "$HOME/.config/zsh/termux/git.zsh"
+  return 0
+fi
+
+if [[ $SYSTEM_NAME == "Darwin" ]]; then
+  source "$HOME/.config/zsh/common/git.zsh"
+elif [[ $SYSTEM_NAME == "Linux" ]]; then
+  source "$HOME/.config/zsh/common/git.zsh"
+fi

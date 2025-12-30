@@ -6,32 +6,51 @@ if [[ -S "$SSH_AGENT_SOCK" ]]; then
   if ss -a 2>/dev/null | grep -q "$SSH_AGENT_SOCK" ||
     ps -p "$SSH_AGENT_PID" >/dev/null 2>&1; then
     export SSH_AUTH_SOCK="$SSH_AGENT_SOCK"
-    return 0
   else
     rm -f "$SSH_AGENT_SOCK"
+    ssh-agent -a "$SSH_AGENT_SOCK" >/dev/null
+    export SSH_AUTH_SOCK="$SSH_AGENT_SOCK"
+    export SSH_AGENT_PID=$!
   fi
+else
+  ssh-agent -a "$SSH_AGENT_SOCK" >/dev/null
+  export SSH_AUTH_SOCK="$SSH_AGENT_SOCK"
+  export SSH_AGENT_PID=$!
 fi
 
-ssh-agent -a "$SSH_AGENT_SOCK" >/dev/null
-export SSH_AUTH_SOCK="$SSH_AGENT_SOCK"
-export SSH_AGENT_PID=$!
+AUTH_PRIMARY="$HOME/.ssh/android-authentication-primary"
+AUTH_MISC="$HOME/.ssh/android-authentication-misc"
+SIGNING_PRIMARY="$HOME/.ssh/android-signing-primary"
+SIGNING_MISC="$HOME/.ssh/android-signing-misc"
 
-AUTH_KEY="$HOME/.ssh/android-authentication"
-SIGNING_KEY="$HOME/.ssh/android-signing"
+MISSING_KEYS=()
 
-if [[ ! -f "$SIGNING_KEY" ]]; then
-  echo "Ключ для подписи коммитов не найден: $SIGNING_KEY"
-  echo "Создайте его: ssh-keygen -t ed25519 -f ~/.ssh/android-signing -C 'android-signing'"
-  echo "Добавьте ~/.ssh/android-signing.pub в GitHub: Settings → SSH and GPG keys"
-  echo "После добавления запустите 'chezmoi apply' еще раз, а затем 'ssh -T git@github.com' для того, чтобы удостовериться, что все работает."
+[[ ! -f "$AUTH_PRIMARY" ]] && MISSING_KEYS+=("$AUTH_PRIMARY")
+[[ ! -f "$AUTH_MISC" ]] && MISSING_KEYS+=("$AUTH_MISC")
+[[ ! -f "$SIGNING_PRIMARY" ]] && MISSING_KEYS+=("$SIGNING_PRIMARY")
+[[ ! -f "$SIGNING_MISC" ]] && MISSING_KEYS+=("$SIGNING_MISC")
+
+if [[ ${#MISSING_KEYS[@]} -gt 0 ]]; then
+  echo "Отсутствуют следующие SSH ключи:"
+  for key in "${MISSING_KEYS[@]}"; do
+    echo "   - $key"
+  done
+  echo ""
+  echo "Создайте недостающие ключи:"
+  echo "  ssh-keygen -t ed25519 -f ~/.ssh/android-authentication-primary -C 'android-auth-primary'"
+  echo "  ssh-keygen -t ed25519 -f ~/.ssh/android-authentication-misc -C 'android-auth-misc'"
+  echo "  ssh-keygen -t ed25519 -f ~/.ssh/android-signing-primary -C 'android-signing-primary'"
+  echo "  ssh-keygen -t ed25519 -f ~/.ssh/android-signing-misc -C 'android-signing-misc'"
+  echo ""
+  echo "Добавьте публичные ключи (.pub) в соответствующие GitHub аккаунты:"
+  echo "  - PRIMARY: $(cat ~/.config/git/.gitconfig-primary 2>/dev/null | grep email | cut -d'=' -f2 | tr -d ' \"' || echo 'primary-email')"
+  echo "  - MISC: $(cat ~/.config/git/.gitconfig-misc 2>/dev/null | grep email | cut -d'=' -f2 | tr -d ' \"' || echo 'misc-email')"
+  echo ""
+  echo "После добавления проверьте подключение:"
+  echo "  ssh -T git@github.com"
 fi
 
-if [[ ! -f "$AUTH_KEY" ]]; then
-  echo "Ключ для аутентификации не найден: $AUTH_KEY"
-  echo "Создайте его: ssh-keygen -t ed25519 -f ~/.ssh/android-authentication -C 'android-auth'"
-  echo "Добавьте ~/.ssh/android-authentication.pub в GitHub: Settings → SSH and GPG keys"
-  echo "После добавления запустите 'chezmoi apply' еще раз, а затем 'ssh -T git@github.com' для того, чтобы удостовериться, что все работает."
-fi
-
-[[ -f "$AUTH_KEY" ]] && ssh-add "$AUTH_KEY" 2>/dev/null
-[[ -f "$SIGNING_KEY" ]] && ssh-add "$SIGNING_KEY" 2>/dev/null
+[[ -f "$AUTH_PRIMARY" ]] && ssh-add "$AUTH_PRIMARY" 2>/dev/null
+[[ -f "$AUTH_MISC" ]] && ssh-add "$AUTH_MISC" 2>/dev/null
+[[ -f "$SIGNING_PRIMARY" ]] && ssh-add "$SIGNING_PRIMARY" 2>/dev/null
+[[ -f "$SIGNING_MISC" ]] && ssh-add "$SIGNING_MISC" 2>/dev/null

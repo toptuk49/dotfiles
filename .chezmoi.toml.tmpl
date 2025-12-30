@@ -3,3 +3,11 @@
 
 [edit]
   command = "nvim"
+
+[data]
+  bw_primary_email = "{{ (bitwarden "item" "My GitHub profile (primary)").identity.email }}"
+  bw_primary_name = "{{ (bitwarden "item" "My GitHub profile (primary)").identity.username }}"
+  bw_primary_key = "{{ (bitwarden "item" "GitHub Signing Key (primary)").sshKey.publicKey }}"
+  bw_misc_email = "{{ (bitwarden "item" "My GitHub profile (misc)").identity.email }}"
+  bw_misc_name = "{{ (bitwarden "item" "My GitHub profile (misc)").identity.username }}"
+  bw_misc_key = "{{ (bitwarden "item" "GitHub Signing Key (misc)").sshKey.publicKey }}"
