@@ -6,7 +6,7 @@ source "$ZSH_CONFIG/pnpm_path.zsh"
 source "$ZSH_CONFIG/conda_path.zsh"
 source "$ZSH_CONFIG/mise_path.zsh"
 source "$ZSH_CONFIG/brew_path.zsh"
-source "$ZSH_CONFIG/ssh.zsh"
+source "$ZSH_CONFIG/ssh_agent.zsh"
 source "$ZSH_CONFIG/git.zsh" &>/dev/null
 
 # pnpm
