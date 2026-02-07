@@ -14,12 +14,12 @@ return {
 	opts = {
 		-- Configure core features of AstroNvim
 		features = {
-			large_buf = { size = 1024 * 256, lines = 10000 }, -- set global limits for large files for disabling features like treesitter
-			autopairs = true, -- enable autopairs at start
-			cmp = true, -- enable completion at start
+			large_buf = { size = 1024 * 256, lines = 10000 },          -- set global limits for large files for disabling features like treesitter
+			autopairs = true,                                          -- enable autopairs at start
+			cmp = true,                                                -- enable completion at start
 			diagnostics = { virtual_text = true, virtual_lines = false }, -- diagnostic settings on startup
-			highlighturl = true, -- highlight URLs at start
-			notifications = true, -- enable notifications at start
+			highlighturl = true,                                       -- highlight URLs at start
+			notifications = true,                                      -- enable notifications at start
 		},
 		-- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
 		diagnostics = {
@@ -41,14 +41,14 @@ return {
 		},
 		-- vim options can be configured here
 		options = {
-			opt = { -- vim.opt.<key>
+			opt = {              -- vim.opt.<key>
 				relativenumber = true, -- sets vim.opt.relativenumber
-				number = true, -- sets vim.opt.number
-				spell = false, -- sets vim.opt.spell
+				number = true,     -- sets vim.opt.number
+				spell = false,     -- sets vim.opt.spell
 				signcolumn = "yes", -- sets vim.opt.signcolumn to yes
-				wrap = false, -- sets vim.opt.wrap
+				wrap = false,      -- sets vim.opt.wrap
 			},
-			g = { -- vim.g.<key>
+			g = {                -- vim.g.<key>
 				-- configure global vim variables (vim.g)
 				-- NOTE: `mapleader` and `maplocalleader` must be set in the AstroNvim opts or before `lazy.setup`
 				-- This can be found in the `lua/lazy_setup.lua` file
@@ -144,10 +144,12 @@ return {
 						local content = file:read("*a")
 						file:close()
 
+						local cwd = vim.fn.getcwd()
+						local relative_path = vim.fn.fnamemodify(current_file, ":~:.")
 						local filename = vim.fn.fnamemodify(current_file, ":t")
 						local extension = vim.fn.fnamemodify(current_file, ":e")
 
-						local result = filename .. ":\n"
+						local result = "`" .. relative_path .. "`:\n"
 						result = result .. "```" .. extension .. "\n"
 						result = result .. content
 						if content:sub(-1) ~= "\n" then
@@ -160,7 +162,10 @@ return {
 						vim.fn.setreg("*", result)
 						vim.fn.setreg('"', result) -- and to unnamed register
 
-						vim.notify("Current file is successfully copied! (" .. filename .. ")", vim.log.levels.INFO)
+						vim.notify(
+							"Current file is successfully copied! (" .. relative_path .. ")",
+							vim.log.levels.INFO
+						)
 					end,
 					desc = "Copy current file in markdown format",
 				},
@@ -200,17 +205,19 @@ return {
 										return
 									end
 
+									local cwd = vim.fn.getcwd()
 									local results = {}
+
 									for _, entry in ipairs(entries) do
 										local file = io.open(entry.path, "r")
 										if file then
 											local content = file:read("*a")
 											file:close()
 
-											local filename = vim.fn.fnamemodify(entry.path, ":t")
+											local relative_path = vim.fn.fnamemodify(entry.path, ":~:.")
 											local extension = vim.fn.fnamemodify(entry.path, ":e")
 
-											table.insert(results, filename .. ":")
+											table.insert(results, "`" .. relative_path .. "`:")
 											table.insert(results, "```" .. extension)
 											table.insert(results, content)
 											if content:sub(-1) ~= "\n" then
