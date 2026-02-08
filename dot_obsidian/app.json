@@ -1,0 +1,16 @@
+{
+  "alwaysUpdateLinks": true,
+  "newFileLocation": "folder",
+  "newFileFolderPath": "00_Documents",
+  "attachmentFolderPath": "00_Assets",
+  "showInlineTitle": false,
+  "vimMode": true,
+  "rightToLeft": false,
+  "tabSize": 2,
+  "pdfExportSettings": {
+    "pageSize": "A4",
+    "landscape": false,
+    "margin": "0",
+    "downscalePercent": 100
+  }
+}
