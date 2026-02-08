@@ -1,0 +1,13 @@
+{
+  "theme": "obsidian",
+  "cssTheme": "Atom",
+  "textFontFamily": "Helvetica Neue",
+  "showRibbon": false,
+  "showViewHeader": false,
+  "interfaceFontFamily": "",
+  "monospaceFontFamily": "FiraCode Nerd Font",
+  "nativeMenus": false,
+  "baseFontSizeAction": false,
+  "accentColor": "#4c79cd",
+  "baseFontSize": 24
+}
