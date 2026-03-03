@@ -2,6 +2,8 @@
 	format = ssh
 [commit]
 	gpgsign = true
+[user]
+	signingKey = ~/.ssh/sourcecraft.pub
 [gpg "ssh"]
 	allowedSignersFile = {{ .chezmoi.homeDir }}/.ssh/allowedSigners
 [credential]
