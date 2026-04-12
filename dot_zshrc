@@ -20,3 +20,6 @@ add-zsh-hook chpwd detect_and_change_account
 if [[ -d .git ]]; then
   detect_and_change_account
 fi
+
+# poetry
+poetry config virtualenvs.in-project true
