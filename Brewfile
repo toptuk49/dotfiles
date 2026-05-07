@@ -1,19 +1,31 @@
+# Basic packages
+
 brew "chezmoi"
-brew "docker"
-brew "docker-compose"
-brew "lazygit"
-brew "neovim"
-brew "pnpm"
-brew "ripgrep"
-brew "tmux"
+brew "bitwarden-cli"
 brew "mise"
+
+# Command line utilities
+
+brew "ripgrep"
 brew "fzf"
 brew "socat"
-brew "bitwarden-cli"
 brew "xclip"
 brew "jq"
-brew "cmake"
-brew "pipx"
 brew "sevenzip"
-brew "poetry"
-brew "pigz"
+
+# Environment and editor
+
+brew "lazygit"
+brew "neovim"
+brew "tmux"
+
+# Containerization
+
+brew "docker"
+brew "docker-compose"
+brew "colima"
+
+# Time management
+
+brew "task"
+brew "timewarrior"
