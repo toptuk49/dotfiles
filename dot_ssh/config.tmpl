@@ -1,14 +1,3 @@
-{{- if (env "ANDROID_ROOT") }}
-Host github.com
-  HostName github.com
-  User git
-  IdentityFile ~/.ssh/android-authentication-primary
-  IdentityFile ~/.ssh/android-authentication-misc
-  IdentityFile ~/.ssh/android-signing-primary
-  IdentityFile ~/.ssh/android-signing-misc
-  IdentitiesOnly yes
-{{- end }}
-
 Host sourcecraft
   HostName ssh.sourcecraft.dev
   User git

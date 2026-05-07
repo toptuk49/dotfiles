@@ -1,18 +1,18 @@
 function detect_and_change_account() {
   local repo_root
   repo_root=$(git rev-parse --show-toplevel 2>/dev/null)
-  
+
   if [[ -z "$repo_root" ]]; then
     return 1
   fi
-  
+
   local remote
   remote=$(git -C "$repo_root" remote get-url origin 2>/dev/null)
-  
+
   if [[ -z "$remote" ]]; then
     return 1
   fi
-  
+
   if [[ "$remote" == *"{{ .bw_primary_name }}"* ]]; then
     git -C "$repo_root" config user.email "{{ .bw_primary_email }}"
     git -C "$repo_root" config user.name "{{ .bw_primary_name }}"
