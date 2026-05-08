@@ -1,0 +1,37 @@
+_ssh_env_file="$HOME/.ssh/agent.env"
+
+_start_agent() {
+  eval "$(ssh-agent -s)" > /dev/null
+  echo "export SSH_AUTH_SOCK=$SSH_AUTH_SOCK" > "$_ssh_env_file"
+  echo "export SSH_AGENT_PID=$SSH_AGENT_PID" >> "$_ssh_env_file"
+  chmod 600 "$_ssh_env_file"
+}
+
+if [[ -z "${SSH_AUTH_SOCK:-}" ]]; then
+  if [[ -f "$_ssh_env_file" ]]; then
+    source "$_ssh_env_file" > /dev/null
+  fi
+fi
+
+if ! ssh-add -l &>/dev/null; then
+  if [[ $? -eq 2 ]]; then
+      _start_agent
+  fi
+fi
+
+if ssh-add -l &>/dev/null; then
+  :
+elif [[ -z "${SSH_AUTH_SOCK:-}" || ! -S "${SSH_AUTH_SOCK:-}" ]]; then
+  _start_agent
+fi
+
+{{ range .accounts }}
+{{ range .private_key_files }}
+if [[ -f "$HOME/.ssh/{{ . }}" ]]; then
+  chmod 600 "$HOME/.ssh/{{ . }}" 2>/dev/null
+  ssh-add "$HOME/.ssh/{{ . }}" 2>/dev/null
+fi
+{{ end }}
+{{ end }}
+
+unset _ssh_env_file _start_agent

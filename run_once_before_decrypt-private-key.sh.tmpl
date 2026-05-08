@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+
+KEY_PATH="{{ .chezmoi.sourceDir }}/dot_key"
+
+if [ ! -f "$KEY_PATH" ]; then
+    mkdir -p "$(dirname "$KEY_PATH")"
+    chezmoi age decrypt --output "$KEY_PATH" --passphrase "{{ .chezmoi.sourceDir }}/dot_key.age"
+    chmod 600 "$KEY_PATH"
+fi

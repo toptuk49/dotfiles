@@ -1,2 +1,5 @@
 README.md
+.gitignore
 .config/nvim/lazy-lock.json
+dot_key
+dot_key.age

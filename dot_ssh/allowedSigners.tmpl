@@ -1,2 +1,2 @@
-{{ (bitwarden "item" "vault.bitwarden.com").login.username }} {{ .bw_primary_key }}
-{{ (bitwarden "item" "vault.bitwarden.com").login.username }} {{ .bw_misc_key }}
+{{ range .accounts }}{{ .email }} {{ .public_key }}
+{{ end }}

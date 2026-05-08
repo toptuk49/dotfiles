@@ -1,7 +1,6 @@
 # Basic packages
 
 brew "chezmoi"
-brew "bitwarden-cli"
 brew "mise"
 
 # Command line utilities
@@ -29,3 +28,8 @@ brew "colima"
 
 brew "task"
 brew "timewarrior"
+
+# Safety and credentials
+
+brew "bitwarden-cli"
+brew "age"
