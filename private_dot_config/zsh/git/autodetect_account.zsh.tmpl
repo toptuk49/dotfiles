@@ -1,0 +1,25 @@
+function detect_and_change_account() {
+  local repo_root
+  repo_root=$(git rev-parse --show-toplevel 2>/dev/null)
+  [[ -z "$repo_root" ]] && return 1
+
+  local remote
+  remote=$(git -C "$repo_root" remote get-url origin 2>/dev/null)
+  [[ -z "$remote" ]] && return 1
+
+  {{ range .accounts }}
+  local matched=false
+  if [[ "{{ .remote_pattern }}" == "github.com" ]]; then
+    [[ "$remote" =~ github\.com[/:]({{ .username }}) ]] && matched=true
+  else
+    [[ "$remote" == *"{{ .remote_pattern }}"* ]] && matched=true
+  fi
+
+  if $matched; then
+    git -C "$repo_root" config user.email "{{ .email }}"
+    git -C "$repo_root" config user.name "{{ .username }}"
+    git -C "$repo_root" config user.signingkey "{{ .public_key }}"
+    return 0
+  fi
+  {{ end }}
+}
