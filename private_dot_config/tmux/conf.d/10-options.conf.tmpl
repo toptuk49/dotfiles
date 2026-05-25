@@ -1,4 +1,4 @@
-set-option -g default-shell zsh
+set-option -g default-shell {{ output "which" "zsh" | trim }}
 
 # True-color support
 set -g default-terminal "tmux-256color"

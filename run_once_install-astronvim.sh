@@ -1,12 +1,13 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 NVIM_CONFIG="$HOME/.config/nvim"
 
-if [ ! -d "$NVIM_CONFIG" ]; then
+if [ ! -f "$NVIM_CONFIG/init.lua" ]; then
   echo "Installing AstroNvim base configuration..."
+  rm -rf "$NVIM_CONFIG"
   git clone --depth 1 https://github.com/AstroNvim/template "$NVIM_CONFIG"
   echo "Base AstroNvim installed."
 else
-  echo "AstroNvim config directory already exists, skipping clone."
+  echo "AstroNvim base config already present, skipping clone."
 fi
