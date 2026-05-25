@@ -11,6 +11,7 @@ brew "socat"
 brew "xclip"
 brew "jq"
 brew "sevenzip"
+brew "tree"
 
 # Environment and editor
 

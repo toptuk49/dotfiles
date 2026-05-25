@@ -1,13 +1,18 @@
 #!/bin/bash
+set -e
 
 echo "Setting up oh-my-zsh..."
 
-OH_MY_ZSH_DIR="$HOME/.oh-my-zsh"
+if ! command -v zsh &>/dev/null; then
+	echo "Zsh is not installed. Please install zsh first."
+	exit 1
+fi
 
-if [ ! -d "$OH_MY_ZSH_DIR" ]; then
-  echo "Installing oh-my-zsh..."
-  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-  echo "oh-my-zsh is successfully installed!"
+OH_MY_ZSH_DIR="$HOME/.oh-my-zsh"
+if [ ! -f "$OH_MY_ZSH_DIR/oh-my-zsh.sh" ]; then
+	echo "Installing oh-my-zsh..."
+	sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+	echo "oh-my-zsh is successfully installed!"
 else
-  echo "oh-my-zsh is already installed!"
+	echo "oh-my-zsh is already installed!"
 fi
