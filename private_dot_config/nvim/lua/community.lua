@@ -6,22 +6,22 @@
 
 ---@type LazySpec
 return {
-  "AstroNvim/astrocommunity",
-  { import = "astrocommunity.pack.lua" },
-  -- frontend
-  { import = "astrocommunity.pack.html-css" },
-  { import = "astrocommunity.pack.angular" },
-  { import = "astrocommunity.pack.tailwindcss" },
-  { import = "astrocommunity.pack.typescript" },
-  { import = "astrocommunity.pack.vue" },
-  -- python
-  { import = "astrocommunity.pack.python" },
-  -- system
-  { import = "astrocommunity.pack.bash" },
-  { import = "astrocommunity.pack.chezmoi" },
-  -- csharp
-  { import = "astrocommunity.pack.cs-omnisharp" },
-  -- cpp
-  { import = "astrocommunity.pack.cpp" },
-  -- import/override with your plugins folder
+	"AstroNvim/astrocommunity",
+	{ import = "astrocommunity.pack.lua" },
+	-- frontend
+	{ import = "astrocommunity.pack.html-css" },
+	{ import = "astrocommunity.pack.angular" },
+	{ import = "astrocommunity.pack.tailwindcss" },
+	{ import = "astrocommunity.pack.typescript" },
+	{ import = "astrocommunity.pack.vue" },
+	-- python
+	{ import = "astrocommunity.pack.python" },
+	-- system
+	{ import = "astrocommunity.pack.bash" },
+	{ import = "astrocommunity.pack.chezmoi" },
+	-- csharp
+	-- { import = "astrocommunity.pack.cs-omnisharp" },
+	-- cpp
+	{ import = "astrocommunity.pack.cpp" },
+	-- import/override with your plugins folder
 }
