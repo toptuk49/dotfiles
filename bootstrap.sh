@@ -3,61 +3,75 @@ set -e
 
 DOTFILES_REPO="https://github.com/toptuk49/dotfiles.git"
 
-echo "Bootstraping dotfiles..."
+echo "Bootstrapping dotfiles..."
 
-# Homebrew installation
+# 1. Cross-platform Homebrew setup
+if [[ "$(uname)" == "Darwin" ]]; then
+  BREW_PATHS=("/opt/homebrew/bin/brew" "/usr/local/bin/brew")
+  SHELL_RC="$HOME/.bash_profile"
+else # Linux / WSL
+  BREW_PATHS=("/home/linuxbrew/.linuxbrew/bin/brew")
+  SHELL_RC="$HOME/.bashrc"
+fi
+
+# Install Homebrew if missing
 if ! command -v brew &>/dev/null; then
   echo "Installing Homebrew..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
-# Activate Homebrew now and also add to .bashrc for future sessions
+# Activate brew in current session and persist it in shell config
+for brew_cmd in "${BREW_PATHS[@]}"; do
+  if [[ -x "$brew_cmd" ]]; then
+    eval "$($brew_cmd shellenv bash)"
+    # Add to the appropriate shell startup file
+    echo >>"$SHELL_RC"
+    echo "eval \"\$($brew_cmd shellenv bash)\"" >>"$SHELL_RC"
+    break
+  fi
+done
+
+# Fail if brew still isn't available
 if ! command -v brew &>/dev/null; then
-  echo "Installing Homebrew..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  echo "ERROR: Homebrew not found after installation."
+  exit 1
 fi
 
-echo >> "$HOME/.bashrc"
-echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"' >> "$HOME/.bashrc"
-eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv bash)"
-
-# Installation of necessary packages
-echo "Installing necessary packages using Homebrew..."
+# 2. Install required packages.
+echo "Installing necessary packages..."
 brew install zsh chezmoi bitwarden-cli age mise
 
-# Register zsh and switch to it
+# 3. Register zsh and change default shell
 if ! grep -q "$(which zsh)" /etc/shells 2>/dev/null; then
   echo "Adding zsh to /etc/shells..."
   command -v zsh | sudo tee -a /etc/shells
 fi
-echo "Switch default shell to zsh..."
+echo "Switching default shell to zsh..."
 chsh -s "$(which zsh)"
 
-# Log in Bitwarden
+# 4. Bitwarden login
 if bw login --check &>/dev/null; then
   echo "Bitwarden already logged in."
 else
   echo "Logging in to Bitwarden..."
   if ! bw login; then
     echo "ERROR: Bitwarden login failed."
-    echo "Please run 'bw login' and then re-run this script."
     exit 1
   fi
 fi
 
-# Unlock Bitwarden vault
 echo "Unlocking Bitwarden vault..."
 if ! BW_SESSION=$(bw unlock --raw); then
   echo "ERROR: Failed to unlock vault."
   exit 1
 fi
 export BW_SESSION
-echo "Vault unlocked."
 
-# Init and apply dotfiles
+# 5. Apply dotfiles
+echo ""
 echo "Bootstrapping chezmoi dotfiles..."
 chezmoi init --apply "$DOTFILES_REPO"
 
-# Launch zsh
+# 6. Launch zsh
 echo "Launching zsh..."
 exec zsh -l

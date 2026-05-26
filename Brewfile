@@ -7,7 +7,6 @@ brew "mise"
 
 brew "ripgrep"
 brew "fzf"
-brew "socat"
 brew "xclip"
 brew "jq"
 brew "sevenzip"

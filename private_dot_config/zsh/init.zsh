@@ -1,4 +1,4 @@
-ZSH_CONFIG_HOME="${0:a:h}"
+ZSH_CONFIG_HOME="$HOME/.config/zsh"
 
 for f in $ZSH_CONFIG_HOME/env.d/*.zsh; do
   source "$f"
