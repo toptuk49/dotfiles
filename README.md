@@ -7,7 +7,21 @@ They are managed with [chezmoi](https://github.com/twpayne/chezmoi), featuring a
 
 ## Quick Start 🚀
 
-On a fresh system, run a single command:
+Neovim requires build-essentials to install plugins. Here are some examples of how to install them on your system:
+
+**Ubuntu**:
+
+```sh
+sudo apt-get install build-essentials
+```
+
+**macOS**:
+
+```sh
+xcode-select --install
+```
+
+Then run a single command:
 
 ```sh
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/toptuk49/dotfiles/main/bootstrap.sh)"

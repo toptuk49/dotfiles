@@ -69,7 +69,7 @@ export BW_SESSION
 
 # 5. Apply dotfiles
 echo ""
-echo "Bootstrapping chezmoi dotfiles..."
+echo "Bootstrapping chezmoi dotfiles... Script will ask for the age passphrase."
 chezmoi init --apply "$DOTFILES_REPO"
 
 # 6. Launch zsh
