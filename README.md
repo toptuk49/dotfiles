@@ -103,6 +103,11 @@ The passphrase used to encrypt `dot_key.age` is yours alone. **Never** store it 
 
 - **Git** - automatic account detection by remote URL and SSH commit signing
 
+- **SSH Config** – generated from `.chezmoi.toml.tmpl` (`private_dot_ssh/config.tmpl`) and pins the correct authentication key per account. Clone repositories using the corresponding host alias:
+  - `git clone git@github.com-primary:user/repo.git`
+  - `git clone git@github.com-misc:user/repo.git`
+  - `git clone git@sourcecraft.dev-sourcecraft:user/repo.git`
+
 - **Brewfile** - list of crossplatform (Linux, macOS) packages (ripgrep, fzf, neovim, tmux, lazygit, etc.). Applied by `run_once_before_brew-bundle.sh`.
 
 - **mise** - version manager for language toolchains; globally installs poetry.
