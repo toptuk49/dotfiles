@@ -3,5 +3,5 @@ plugins=(
   z
   fzf-zsh-plugin
   zsh-syntax-highlighting
-  poetry
+  uv
 )

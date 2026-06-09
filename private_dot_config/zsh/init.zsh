@@ -11,5 +11,3 @@ source "$ZSH_CONFIG_HOME/ssh/init.zsh"
 source "$ZSH_CONFIG_HOME/git/init.zsh"
 
 alias pn="pnpm"
-
-poetry config virtualenvs.in-project true
