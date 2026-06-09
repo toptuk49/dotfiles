@@ -11,6 +11,8 @@ brew "xclip"
 brew "jq"
 brew "sevenzip"
 brew "tree"
+brew "ffmpeg"
+brew "imagemagick"
 
 # Environment and editor
 
