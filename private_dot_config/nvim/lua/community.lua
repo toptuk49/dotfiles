@@ -23,5 +23,6 @@ return {
 	-- { import = "astrocommunity.pack.cs-omnisharp" },
 	-- cpp
 	{ import = "astrocommunity.pack.cpp" },
-	-- import/override with your plugins folder
+	-- documents
+	{ import = "astrocommunity.pack.markdown" },
 }

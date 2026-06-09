@@ -19,6 +19,7 @@ brew "imagemagick"
 brew "lazygit"
 brew "neovim"
 brew "tmux"
+brew "icu4c"
 
 # Containerization
 
