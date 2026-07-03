@@ -10,7 +10,7 @@ function detect_and_change_account() {
   {{ range .accounts }}
   local matched=false
   if [[ "{{ .remote_pattern }}" == "github.com" ]]; then
-    [[ "$remote" =~ github\.com[/:]({{ .username }}) ]] && matched=true
+    [[ "$remote" =~ github\.com[-a-zA-Z0-9]*[:/]({{ .username }}) ]] && matched=true
   else
     [[ "$remote" == *"{{ .remote_pattern }}"* ]] && matched=true
   fi
