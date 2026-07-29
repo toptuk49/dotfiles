@@ -1,6 +1,6 @@
 ZSH_CONFIG_HOME="$HOME/.config/zsh"
 
-for f in $ZSH_CONFIG_HOME/env.d/*.zsh; do
+for f in $ZSH_CONFIG_HOME/env.d/*.zsh(N); do
   source "$f"
 done
 

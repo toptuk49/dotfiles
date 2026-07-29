@@ -1,0 +1,4 @@
+[bootstrap.packages]
+"apt:git" = "latest"
+"apt:zsh" = "latest"
+"apt:build-essential" = "latest"

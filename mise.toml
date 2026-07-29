@@ -1,0 +1,26 @@
+[tools]
+gh = "latest"
+bitwarden = "latest"
+age = "latest"
+
+ripgrep = "latest"
+fzf = "latest"
+jq = "latest"
+"aqua:ip7z/7zip" = "latest"
+"aqua:peteretelej/tree" = "latest"
+
+lazygit = "latest"
+neovim = "latest"
+tmux = "latest"
+uv = "latest"
+pnpm = "latest"
+
+[bootstrap.repos]
+"~/.oh-my-zsh" = { url = "https://github.com/ohmyzsh/ohmyzsh.git", ref = "master" }
+"~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" = { url = "https://github.com/zsh-users/zsh-syntax-highlighting.git" }
+"~/.oh-my-zsh/custom/plugins/zsh-autosuggestions" = { url = "https://github.com/zsh-users/zsh-autosuggestions.git" }
+"~/.oh-my-zsh/custom/plugins/fzf-zsh-plugin" = { url = "https://github.com/unixorn/fzf-zsh-plugin.git" }
+"~/.config/nvim" = { url = "https://github.com/AstroNvim/template.git", ref = "main" }
+
+[bootstrap.user]
+login_shell = "/bin/zsh"
