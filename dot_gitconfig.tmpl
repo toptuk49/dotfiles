@@ -4,3 +4,7 @@
 	gpgsign = {{ eq .profile "dev" }}
 [init]
 	defaultBranch = main
+{{ if eq .profile "dev" }}
+[core]
+	editor = nvim
+{{ end }}
