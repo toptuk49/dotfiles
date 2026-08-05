@@ -6,8 +6,4 @@ done
 
 source "$ZSH_CONFIG_HOME/plugins/init.zsh"
 
-source "$ZSH_CONFIG_HOME/ssh/init.zsh"
-
-source "$ZSH_CONFIG_HOME/git/init.zsh"
-
 alias pn="pnpm"

@@ -1,7 +1,0 @@
-{{ range .accounts }}
-Host {{ .remote_pattern }}-{{ .name }}
-  HostName {{ .remote_pattern }}
-  User git
-  IdentityFile ~/.ssh/{{ .auth_key }}
-  IdentitiesOnly yes
-{{ end }}
