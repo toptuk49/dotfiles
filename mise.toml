@@ -1,6 +1,5 @@
 [tools]
 gh = "latest"
-bitwarden = "latest"
 
 ripgrep = "latest"
 fzf = "latest"

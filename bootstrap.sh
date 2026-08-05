@@ -10,21 +10,11 @@ curl https://mise.run | sh
 export PATH="${HOME}/.local/bin:${PATH}"
 eval "$(mise activate bash)"
 
-echo "Installing chezmoi and bitwarden..."
-mise use -g "chezmoi@latest" "bitwarden@latest"
+echo "Installing chezmoi..."
+mise use -g "chezmoi@latest"
 eval "$(mise activate bash)"
 
-if command -v bw &>/dev/null; then
-	if ! bw login --check &>/dev/null 2>&1; then
-		echo "Logging in to Bitwarden..."
-		bw login
-	fi
-	echo "Unlocking Bitwarden vault..."
-	BW_SESSION=$(bw unlock --raw)
-	export BW_SESSION
-fi
-
-echo "Initializing chezmoi (requires Bitwarden for .chezmoi.toml.tmpl)..."
+echo "Initializing chezmoi..."
 chezmoi init "$DOTFILES_REPO"
 cd "$(chezmoi source-path)"
 mise trust
