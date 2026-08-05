@@ -18,7 +18,7 @@ function detect_and_change_account() {
   if $matched; then
     git -C "$repo_root" config user.email "{{ .email }}"
     git -C "$repo_root" config user.name "{{ .username }}"
-    git -C "$repo_root" config user.signingkey "{{ .public_key }}"
+    git -C "$repo_root" config user.signingkey "$HOME/.ssh/{{ .sign_key }}.pub"
     return 0
   fi
   {{ end }}

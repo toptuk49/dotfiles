@@ -1,7 +1,6 @@
 [tools]
 gh = "latest"
 bitwarden = "latest"
-age = "latest"
 
 ripgrep = "latest"
 fzf = "latest"

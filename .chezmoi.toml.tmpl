@@ -1,42 +1,33 @@
-encryption = "age"
-
 [bitwarden]
   unlock = "auto"
 
 [edit]
   command = "nvim"
 
-[age]
-    identity = "{{ .chezmoi.sourceDir }}/dot_key"
-    recipient = "{{ (bitwarden "item" "Chezmoi Age Public Key").notes }}"
-
 [data]
   [[data.accounts]]
     name = "primary"
-    identity_item = "My GitHub profile (primary)"
-    key_item = "GitHub Signing Key (primary)"
     remote_pattern = "github.com"
+    registrar = "github"
     email = "{{ (bitwarden "item" "My GitHub profile (primary)").identity.email }}"
     username = "{{ (bitwarden "item" "My GitHub profile (primary)").identity.username }}"
-    public_key = "{{ (bitwarden "item" "GitHub Signing Key (primary)").sshKey.publicKey }}"
-    private_key_files = ["key_auth_primary", "key_sign_primary"]
+    auth_key = "key_auth_primary"
+    sign_key = "key_sign_primary"
 
   [[data.accounts]]
     name = "misc"
-    identity_item = "My GitHub profile (misc)"
-    key_item = "GitHub Signing Key (misc)"
     remote_pattern = "github.com"
+    registrar = "github"
     email = "{{ (bitwarden "item" "My GitHub profile (misc)").identity.email }}"
     username = "{{ (bitwarden "item" "My GitHub profile (misc)").identity.username }}"
-    public_key = "{{ (bitwarden "item" "GitHub Signing Key (misc)").sshKey.publicKey }}"
-    private_key_files = ["key_auth_misc", "key_sign_misc"]
+    auth_key = "key_auth_misc"
+    sign_key = "key_sign_misc"
 
   [[data.accounts]]
     name = "sourcecraft"
-    identity_item = "SourceCraft profile"
-    key_item = "SourceCraft Key"
     remote_pattern = "sourcecraft.dev"
+    registrar = "manual"
     email = "{{ (bitwarden "item" "SourceCraft profile").identity.email }}"
     username = "{{ (bitwarden "item" "SourceCraft profile").identity.username }}"
-    public_key = "{{ (bitwarden "item" "SourceCraft Key").sshKey.publicKey }}"
-    private_key_files = ["key_sourcecraft"]
+    auth_key = "key_sourcecraft"
+    sign_key = "key_sourcecraft"

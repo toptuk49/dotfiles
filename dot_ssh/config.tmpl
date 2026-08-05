@@ -2,6 +2,6 @@
 Host {{ .remote_pattern }}-{{ .name }}
   HostName {{ .remote_pattern }}
   User git
-  IdentityFile ~/.ssh/{{ index .private_key_files 0 }}
+  IdentityFile ~/.ssh/{{ .auth_key }}
   IdentitiesOnly yes
 {{ end }}

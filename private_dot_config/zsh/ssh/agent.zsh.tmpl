@@ -26,7 +26,7 @@ elif [[ -z "${SSH_AUTH_SOCK:-}" || ! -S "${SSH_AUTH_SOCK:-}" ]]; then
 fi
 
 {{ range .accounts }}
-{{ range .private_key_files }}
+{{ range list .auth_key .sign_key | uniq }}
 if [[ -f "$HOME/.ssh/{{ . }}" ]]; then
   chmod 600 "$HOME/.ssh/{{ . }}" 2>/dev/null
   ssh-add "$HOME/.ssh/{{ . }}" 2>/dev/null

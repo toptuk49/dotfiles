@@ -10,8 +10,8 @@ curl https://mise.run | sh
 export PATH="${HOME}/.local/bin:${PATH}"
 eval "$(mise activate bash)"
 
-echo "Installing chezmoi, bitwarden, and age..."
-mise use -g "chezmoi@latest" "bitwarden@latest" "age@latest"
+echo "Installing chezmoi and bitwarden..."
+mise use -g "chezmoi@latest" "bitwarden@latest"
 eval "$(mise activate bash)"
 
 if command -v bw &>/dev/null; then
@@ -34,7 +34,7 @@ chezmoi apply -P ~/.config/mise/miserc.toml
 
 mise bootstrap
 
-echo "Applying dotfiles (age passphrase may be required)..."
+echo "Applying dotfiles..."
 chezmoi apply
 
 echo "Bootstrap complete."
