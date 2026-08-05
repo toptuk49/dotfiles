@@ -1,2 +1,12 @@
 [tools]
 gh = "latest"
+ripgrep = "latest"
+jq = "latest"
+"aqua:ip7z/7zip" = "latest"
+"aqua:peteretelej/tree" = "latest"
+lazygit = "latest"
+neovim = "latest"
+uv = "latest"
+
+[bootstrap.repos]
+"~/.config/nvim" = { url = "https://github.com/AstroNvim/template.git", ref = "main" }
