@@ -1,6 +1,4 @@
 [tools]
-gh = "latest"
-
 ripgrep = "latest"
 fzf = "latest"
 jq = "latest"

@@ -1,6 +1,6 @@
 [gpg]
 	format = ssh
 [commit]
-	gpgsign = true
+	gpgsign = {{ eq .profile "dev" }}
 [init]
 	defaultBranch = main
