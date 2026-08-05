@@ -1,5 +1,5 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-ascii"]{{ if eq (env "CHEZMOI_PROFILE") "sandbox" }},
+  "plugin": ["opencode-ascii", "opencode-bell"]{{ if eq (env "CHEZMOI_PROFILE") "sandbox" }},
   "permission": "allow"{{ end }}
 }
