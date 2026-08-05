@@ -25,12 +25,20 @@ Chezmoi naming maps source paths to targets:
 
 Bootstrap config lives at the source root and is consumed in place (not deployed to `$HOME`):
 
-- **`bootstrap.sh`** — first-run script: mise → chezmoi init → partial apply of `miserc.toml` → `mise bootstrap` → `chezmoi apply`
-- **`mise.toml`** — `[tools]`, `[bootstrap.repos]`, `[bootstrap.user]`
-- **`mise.linux.toml`** — Linux apt packages; loaded when `auto_env` is enabled
-- **`private_dot_config/mise/miserc.toml`** → `~/.config/mise/miserc.toml` with `auto_env = true`
+- **`bootstrap.sh`** - universal first-run script and the single source of truth for provisioning, invoked by the Dockerfile: mise → chezmoi init → partial apply of `miserc.toml` → `mise bootstrap --yes` → `chezmoi apply`. Environment: `CHEZMOI_PROFILE` (default `dev`, also sets `MISE_ENV`), `DOTFILES_REPO`, `DOTFILES_BRANCH`; pass `--no-login-shell` to skip starting zsh at the end (used by Docker builds)
+- **`mise.toml`** - `[tools]`, `[bootstrap.repos]`, `[bootstrap.user]`
+- **`mise.linux.toml`** - Linux apt packages; loaded when `auto_env` is enabled
+- **`private_dot_config/mise/miserc.toml`** -> `~/.config/mise/miserc.toml` with `auto_env = true`
 
 Partial apply of `miserc.toml` before `mise bootstrap` is required: `auto_env` must be active so `mise.linux.toml` installs `git`, `zsh`, and `build-essential` before the full `chezmoi apply`.
+
+The `Dockerfile` is a thin wrapper over `bootstrap.sh`: it only installs `curl`, copies the script in, and runs it with `--no-login-shell` under the chosen `PROFILE`. Everything else lives in `bootstrap.sh`, so there is no duplicated provisioning logic.
+
+To provision a machine manually for the dev profile:
+
+```sh
+CHEZMOI_PROFILE=dev bash bootstrap.sh
+```
 
 ## SSH and git identity (manual, per container)
 
@@ -80,10 +88,10 @@ Oh My Zsh and plugins are cloned by `mise bootstrap` into `~/.oh-my-zsh`. Plugin
 
 ## Components
 
-- **Neovim** — [AstroNvim](https://github.com/AstroNvim/template) template cloned to `~/.config/nvim` by mise; overrides in `private_dot_config/nvim/lua/`
-- **tmux** — modular config in `private_dot_config/tmux/conf.d/`; `10-options.conf.tmpl` sets `default-shell zsh`
-- **lazygit** — `private_dot_config/lazygit/config.yml`
-- **Tools** — managed in `mise.toml` (gh, neovim, tmux, uv, pnpm, ripgrep, jq, lazygit, …)
+- **Neovim** - [AstroNvim](https://github.com/AstroNvim/template) template cloned to `~/.config/nvim` by mise; overrides in `private_dot_config/nvim/lua/`
+- **tmux** - modular config in `private_dot_config/tmux/conf.d/`; `10-options.conf.tmpl` sets `default-shell zsh`
+- **lazygit** - `private_dot_config/lazygit/config.yml`
+- **Tools** - managed in `mise.toml` (gh, neovim, tmux, uv, pnpm, ripgrep, jq, lazygit, …)
 
 ## Workflow
 
