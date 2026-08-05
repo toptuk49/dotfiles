@@ -8,3 +8,10 @@ set-option -g history-limit 10000
 
 setw -g automatic-rename on
 set-option -g allow-rename off
+
+{{ if eq (env "CHEZMOI_PROFILE") "sandbox" }}
+# Forward terminal bell so opencode-bell rings even from a background pane
+set -g monitor-bell on
+set -g bell-action any
+set -g visual-bell off
+{{ end }}

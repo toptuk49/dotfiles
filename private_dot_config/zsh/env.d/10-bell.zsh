@@ -1,0 +1,2 @@
+unsetopt beep
+unsetopt list_beep
