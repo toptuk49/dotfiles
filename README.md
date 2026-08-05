@@ -1,6 +1,8 @@
 # Dotfiles ⚙️
 
-Personal shell, editor, and tooling configurations. The repository is a [chezmoi](https://github.com/twpayne/chezmoi) source state: templates and encrypted secrets are rendered into the home directory on `chezmoi apply`. Machine setup (tools, system packages, external repos) is handled declaratively by [mise bootstrap](https://mise.jdx.dev/dev-tools/bootstrap.html).
+Personal shell, editor, and tooling configurations. The repository is a [chezmoi](https://github.com/twpayne/chezmoi) source state: files are rendered into the home directory on `chezmoi apply`. Machine setup (tools, system packages, external repos) is handled declaratively by [mise bootstrap](https://mise.jdx.dev/dev-tools/bootstrap.html).
+
+No personal data, no secrets, and no secrets manager are involved at render time.
 
 ## Architecture
 
@@ -8,10 +10,8 @@ Two layers split responsibilities:
 
 | Layer | Role |
 |-------|------|
-| **chezmoi** | Dotfiles, Go templates, age-encrypted secrets, account-specific config |
+| **chezmoi** | Dotfiles and static configs |
 | **mise** | Tool versions, apt packages (Linux), git repos (Oh My Zsh, AstroNvim), login shell |
-
-Secrets never live in plaintext in git. Public data (emails, usernames, signing keys) is pulled from Bitwarden at template render time; private SSH keys are stored age-encrypted and decrypted on apply.
 
 ## Repository layout
 
@@ -19,34 +19,53 @@ Chezmoi naming maps source paths to targets:
 
 | Source prefix | Target | Notes |
 |---------------|--------|-------|
-| `dot_*` | `~/.*` | e.g. `dot_zshrc` → `~/.zshrc` |
+| `dot_*` | `~/.*` | e.g. `dot_zshrc` → `~/.zshrc`, `dot_gitconfig` → `~/.gitconfig` |
 | `private_dot_config/` | `~/.config/` | private permissions |
-| `dot_ssh/` | `~/.ssh/` | config templates + encrypted keys |
-| `*.tmpl` | rendered file | Go templates with Bitwarden/age data |
-| `run_once_*` | one-shot scripts | run before/after apply |
+| `*.tmpl` | rendered file | Go templates |
 
 Bootstrap config lives at the source root and is consumed in place (not deployed to `$HOME`):
 
-- **`bootstrap.sh`** — first-run script: mise → Bitwarden → chezmoi init → partial apply of `miserc.toml` → `mise bootstrap` → `chezmoi apply`
+- **`bootstrap.sh`** — first-run script: mise → chezmoi init → partial apply of `miserc.toml` → `mise bootstrap` → `chezmoi apply`
 - **`mise.toml`** — `[tools]`, `[bootstrap.repos]`, `[bootstrap.user]`
 - **`mise.linux.toml`** — Linux apt packages; loaded when `auto_env` is enabled
 - **`private_dot_config/mise/miserc.toml`** → `~/.config/mise/miserc.toml` with `auto_env = true`
 
 Partial apply of `miserc.toml` before `mise bootstrap` is required: `auto_env` must be active so `mise.linux.toml` installs `git`, `zsh`, and `build-essential` before the full `chezmoi apply`.
 
-## Secrets and accounts
+## SSH and git identity (manual, per container)
 
-**`.chezmoi.toml.tmpl`** is the single source of truth for identities. It defines:
+SSH keys are **not** stored in the repository and are **not** managed by any script. Each container generates its own keys by hand and registers them with GitHub. The Git signing key is configured globally in the dev container only.
 
-- age encryption (identity in `dot_key`, recipient from Bitwarden item `Chezmoi Age Public Key`)
-- Bitwarden auto-unlock
-- `[data.accounts]` — per-account email, username, SSH public key, and encrypted private key filenames
+### Dev container
 
-**Age identity:** the secret key is stored encrypted as `dot_key.age` (passphrase-protected, not in git as plaintext). `run_once_before_decrypt-private-key.sh.tmpl` decrypts it to `dot_key` in the source dir on first apply.
+After `chezmoi apply`, run once:
 
-**SSH keys:** private keys live as `dot_ssh/encrypted_private_key_*.age`. Templates (`dot_ssh/config.tmpl`, `private_dot_config/zsh/ssh/agent.zsh.tmpl`) reference key names from `[data.accounts]`.
+```sh
+# 1. Authentication key — gh creates ~/.ssh/id_ed25519 and registers it; leave the passphrase empty
+gh auth login # choose SSH protocol (or HTTPS)
 
-**Git signing:** `dot_gitconfig.tmpl` enables SSH commit signing; `dot_ssh/allowedSigners.tmpl` lists allowed signers per account.
+# 2. Signing key (separate from auth); leave the passphrase empty
+ssh-keygen -t ed25519 -f ~/.ssh/signing_key
+gh ssh-key add ~/.ssh/signing_key.pub --type signing
+
+# 3. Git identity — global config lives in the dev container only
+git config --global user.name  "<name>"
+git config --global user.email "<email>"
+git config --global user.signingkey "~/.ssh/signing_key"
+
+# 4. Verify GitHub's SSH accepts this key and the signing registration
+ssh -T git@github.com
+```
+
+Notes:
+
+- `~/.gitconfig` is managed by chezmoi (it enables `gpg.format = ssh` and `commit.gpgsign = true`). Personal values set via `git config --global` are appended after apply and survive until the next `chezmoi apply`, which resets the file — re-run the `git config --global` lines if that happens.
+- `user.signingkey` points at the **private** key path, so signing works without an ssh-agent.
+- No `~/.ssh/config` is required: `id_ed25519` is the default key name SSH tries for `git@github.com`.
+
+### Sandbox container
+
+The project folder (including its `.git/config`) is mounted into the sandbox, but the sandbox has **no** git identity: `user.name`, `user.email`, and `user.signingkey` live only in the dev container's `~/.gitconfig`, which is never applied to the sandbox. Because commits are signed, the sandbox **cannot** sign commits or push — use the dev container for that. As a side effect, nothing personal is exposed through the mounted repository.
 
 ## Shell (zsh)
 
@@ -54,31 +73,17 @@ Partial apply of `miserc.toml` before `mise bootstrap` is required: `auto_env` m
 ~/.zshrc                          ← dot_zshrc
   └── ~/.config/zsh/init.zsh      ← private_dot_config/zsh/init.zsh
         ├── env.d/00-mise.zsh     ← mise activate
-        ├── plugins/              ← Oh My Zsh theme and plugin list
-        ├── ssh/                  ← agent and key loading (templated)
-        └── git/                  ← autodetect_account.zsh.tmpl
+        └── plugins/              ← Oh My Zsh theme and plugin list
 ```
 
 Oh My Zsh and plugins are cloned by `mise bootstrap` into `~/.oh-my-zsh`. Plugin config is in `private_dot_config/zsh/plugins/`.
-
-`autodetect_account.zsh.tmpl` sets `user.email`, `user.name`, and `user.signingkey` per repo based on remote URL and the accounts defined in `.chezmoi.toml.tmpl`.
 
 ## Components
 
 - **Neovim** — [AstroNvim](https://github.com/AstroNvim/template) template cloned to `~/.config/nvim` by mise; overrides in `private_dot_config/nvim/lua/`
 - **tmux** — modular config in `private_dot_config/tmux/conf.d/`; `10-options.conf.tmpl` sets `default-shell zsh`
 - **lazygit** — `private_dot_config/lazygit/config.yml`
-- **Tools** — managed in `mise.toml` (gh, neovim, tmux, uv, pnpm, ripgrep, fzf, jq, lazygit, …)
-
-## SSH host aliases
-
-`dot_ssh/config.tmpl` generates per-account host aliases:
-
-```
-git clone git@github.com-primary:user/repo.git
-git clone git@github.com-misc:user/repo.git
-git clone git@sourcecraft.dev-sourcecraft:user/repo.git
-```
+- **Tools** — managed in `mise.toml` (gh, neovim, tmux, uv, pnpm, ripgrep, jq, lazygit, …)
 
 ## Workflow
 
