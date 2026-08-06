@@ -73,7 +73,9 @@ Notes:
 
 ### Sandbox container
 
-The project folder (including its `.git/config`) is mounted into the sandbox, but the sandbox has **no** git identity: `user.name`, `user.email`, and `user.signingkey` live only in the dev container's `~/.gitconfig`, which is never applied to the sandbox. Because commits are signed, the sandbox **cannot** sign commits or push — use the dev container for that. As a side effect, nothing personal is exposed through the mounted repository.
+The project folder (including its `.git/config`) is mounted into the sandbox at `~/workspace`, but the sandbox has **no** git identity: `user.name`, `user.email`, and `user.signingkey` live only in the dev container's `~/.gitconfig`, which is never applied to the sandbox. Because commits are signed, the sandbox **cannot** sign commits or push — use the dev container for that. As a side effect, nothing personal is exposed through the mounted repository.
+
+The workspace lives at `~/workspace` (inside `$HOME`) rather than at the filesystem root, because mise resolves the profile tool configs (`~/mise.toml`, `~/mise.dev.toml`, `~/mise.sandbox.toml`, `~/mise.linux.toml`) by walking up from the current directory and stops at `$HOME`. Starting the shell from `/root/workspace` makes those tools available immediately.
 
 ## Shell (zsh)
 
