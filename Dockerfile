@@ -18,5 +18,5 @@ RUN DOTFILES_REPO="https://github.com/toptuk49/dotfiles.git" \
     DOTFILES_BRANCH="$DOTFILES_BRANCH" \
     bootstrap.sh --no-login-shell
 
-WORKDIR /workspace
+WORKDIR $HOME/workspace
 ENTRYPOINT ["zsh", "-l"]
