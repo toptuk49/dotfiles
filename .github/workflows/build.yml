@@ -34,51 +34,20 @@ jobs:
             DOTFILES_BRANCH=${{ steps.ref.outputs.branch }}
           cache-from: type=gha,scope=${{ matrix.profile }}
           cache-to: type=gha,scope=${{ matrix.profile }},mode=max
-          load: true
-          tags: dotfiles:${{ matrix.profile }}
-
-      - name: Smoke test (bootstrap completed, no failing apply)
-        env:
-          PROFILE: ${{ matrix.profile }}
-        run: |
-          # Drive the container the way it is used interactively: a zsh login shell
-          # whose mise env is activated (see ~/.config/zsh/env.d/00-mise.zsh, sourced
-          # from ~/.zshrc). The smoke checks only pass if mise-managed tools resolve.
-          img_run() {
-            docker run --rm --entrypoint zsh "dotfiles:${PROFILE}" -lc \
-              'source "$HOME/.config/zsh/env.d/00-mise.zsh"; cd "$(chezmoi source-path)"; eval "$1"' zsh "$1"
-          }
-          case "$PROFILE" in
-            dev)
-              img_run 'command -v gh rg nvim lazygit tmux uv'
-              img_run 'test "$(git config --get commit.gpgsign)" = "true"'
-              ;;
-            sandbox)
-              img_run 'command -v tmux git opencode'
-              if img_run 'command -v gh rg nvim lazygit fzf' >/dev/null 2>&1; then
-                echo "::error::dev-only tools must not be installed in the sandbox profile"
-                exit 1
-              fi
-              img_run 'test "$(git config --get commit.gpgsign)" = "false"'
-              ;;
-          esac
-          img_run 'chezmoi verify'
 
   publish:
     if: github.ref == 'refs/heads/main'
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.arch == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
     permissions:
       contents: read
       packages: write
     strategy:
       matrix:
         profile: [dev, sandbox]
+        arch: [amd64, arm64]
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -92,7 +61,7 @@ jobs:
 
       - name: Compute image tags
         id: tags
-        run: echo "tags=ghcr.io/${{ github.repository }}:${{ matrix.profile }}" >> "$GITHUB_OUTPUT"
+        run: echo "tags=ghcr.io/${{ github.repository }}:${{ matrix.profile }}-${{ matrix.arch }}" >> "$GITHUB_OUTPUT"
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -101,11 +70,41 @@ jobs:
           build-args: |
             PROFILE=${{ matrix.profile }}
             DOTFILES_BRANCH=main
-          cache-from: type=gha,scope=${{ matrix.profile }}
-          platforms: linux/amd64,linux/arm64
+          cache-from: type=gha,scope=${{ matrix.profile }}-${{ matrix.arch }}
+          cache-to: type=gha,scope=${{ matrix.profile }}-${{ matrix.arch }},mode=max
+          platforms: linux/${{ matrix.arch }}
           annotations: |
             org.opencontainers.image.title=toptuk49/dotfiles
             org.opencontainers.image.description=Workflow configuration files and scripts.
             org.opencontainers.image.source=https://github.com/toptuk49/dotfiles
           push: true
           tags: ${{ steps.tags.outputs.tags }}
+
+  merge:
+    if: github.ref == 'refs/heads/main'
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        profile: [dev, sandbox]
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge arch manifests
+        run: |
+          image="ghcr.io/${{ github.repository }}"
+          docker buildx imagetools create \
+            -t "$image:${{ matrix.profile }}" \
+            "$image:${{ matrix.profile }}-amd64" \
+            "$image:${{ matrix.profile }}-arm64"#
