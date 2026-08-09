@@ -1,5 +1,6 @@
 [tools]
 tmux = "latest"
+"github:aymanbagabas/shcopy" = "latest"
 
 [bootstrap.repos]
 "~/.oh-my-zsh" = { url = "https://github.com/ohmyzsh/ohmyzsh.git", ref = "master" }
