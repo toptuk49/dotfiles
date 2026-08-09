@@ -107,4 +107,4 @@ jobs:
           docker buildx imagetools create \
             -t "$image:${{ matrix.profile }}" \
             "$image:${{ matrix.profile }}-amd64" \
-            "$image:${{ matrix.profile }}-arm64"#
+            "$image:${{ matrix.profile }}-arm64"
