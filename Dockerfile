@@ -2,6 +2,7 @@ FROM ubuntu:latest
 
 ARG PROFILE
 ARG DOTFILES_BRANCH
+ARG GIT_SHA
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV HOME=/root
@@ -14,7 +15,8 @@ RUN apt update && apt install -y curl
 
 COPY bootstrap.sh /usr/local/bin/bootstrap.sh
 
-RUN DOTFILES_REPO="https://github.com/toptuk49/dotfiles.git" \
+RUN echo "Building dotfiles image from ${GIT_SHA}" \
+    && DOTFILES_REPO="https://github.com/toptuk49/dotfiles.git" \
     DOTFILES_BRANCH="$DOTFILES_BRANCH" \
     bootstrap.sh --no-login-shell
 
