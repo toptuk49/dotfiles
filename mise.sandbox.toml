@@ -1,2 +1,8 @@
 [tools]
 opencode = "latest"
+"aqua:peteretelej/tree" = "latest"
+ripgrep = "latest"
+neovim = "latest"
+
+[bootstrap.repos]
+"~/.config/nvim" = { url = "https://github.com/AstroNvim/template.git", ref = "main" }

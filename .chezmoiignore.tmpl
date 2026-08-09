@@ -2,7 +2,11 @@ README.md
 .gitignore
 .config/nvim/lazy-lock.json
 
-{{ if eq .profile "sandbox" }}
+{{ if eq .profile "dev" }}
 .config/nvim
+.config/opencode
+{{ end }}
+
+{{ if eq .profile "sandbox" }}
 .config/lazygit
 {{ end }}
