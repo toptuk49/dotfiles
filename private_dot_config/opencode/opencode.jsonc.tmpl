@@ -1,5 +1,19 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "plugin": ["opencode-ascii", "opencode-bell", "opencode-dir"]{{ if eq (env "CHEZMOI_PROFILE") "sandbox" }},
-  "permission": "allow"{{ end }}
+  "plugin": ["opencode-ascii", "opencode-bell"]{{ if eq (env "CHEZMOI_PROFILE") "sandbox" }},
+  "permission": "allow"{{ end }},
+  "default_agent": "chat",
+  "agent": {
+    "chat": {
+      "color": "#a4fd75",
+      "prompt": "You are a direct Q&A and research assistant. Your sole goal is to answer the user's question, using any tools necessary (websearch, shell commands, etc.). Provide answers without generating future agent-orchestration steps. You must not implement any functionality!",
+      "tools": {
+        "websearch": true,
+        "webfetch": true,
+        "bash": true,
+        "edit": false,
+        "patch": false
+      }
+    }
+  }
 }
