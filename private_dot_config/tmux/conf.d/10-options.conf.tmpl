@@ -2,7 +2,7 @@ set -s set-clipboard on
 
 # True-color support
 set -g default-terminal "tmux-256color"
-set -ga terminal-overrides ",*256col*:Tc"
+set-option -sa terminal-features ",$TERM:RGB"
 
 set-option -g history-limit 10000
 
