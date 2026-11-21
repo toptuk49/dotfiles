@@ -2,10 +2,5 @@
 tmux = "latest"
 "github:aymanbagabas/shcopy" = "latest"
 
-[bootstrap.repos]
-"~/.oh-my-zsh" = { url = "https://github.com/ohmyzsh/ohmyzsh.git", ref = "master" }
-"~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting" = { url = "https://github.com/zsh-users/zsh-syntax-highlighting.git" }
-"~/.oh-my-zsh/custom/plugins/zsh-autosuggestions" = { url = "https://github.com/zsh-users/zsh-autosuggestions.git" }
-
 [bootstrap.user]
 login_shell = "/bin/zsh"

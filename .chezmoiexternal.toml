@@ -1,0 +1,15 @@
+[".config/nvim"]
+  type = "git-repo"
+  url = "https://github.com/toptuk49/astronvim-config.git"
+
+[".oh-my-zsh"]
+  type = "git-repo"
+  url = "https://github.com/ohmyzsh/ohmyzsh.git"
+
+[".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
+  type = "git-repo"
+  url = "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+
+[".oh-my-zsh/custom/plugins/zsh-autosuggestions"]
+  type = "git-repo"
+  url = "https://github.com/zsh-users/zsh-autosuggestions.git"
